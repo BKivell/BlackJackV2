@@ -89,17 +89,13 @@ public class BlackJackDB {
     public void printUserData() {
         try {
             ResultSet rs = dBQuery("SELECT * FROM USERDATA");
-            System.out.println("1");
             if (rs != null) {
-                System.out.println("2");
                 while (rs.next()) {
                     String username = rs.getString("username");
                     int balance = rs.getInt("balance");
                     System.out.println("USER: " + username + " BAL: " + balance);
                 }
-                System.out.println("3");
             }
-            System.out.println("4");
         } catch (SQLException ex) {
             System.out.println("Error searching for user");
         }
@@ -114,8 +110,6 @@ public class BlackJackDB {
             if (rs != null) {
                 if (rs.next()) {
                     userCheck = true;
-                    System.out.println("found user");
-
                 } else {
                     System.out.println("No User Found");
 
@@ -154,15 +148,25 @@ public class BlackJackDB {
     public void updateUserData(String userName, int newBalance) {
         if (!checkForUser(userName)) { // If no user found, add new user
             dBUpdate("INSERT INTO USERDATA VALUES('" + userName + "'," + newBalance + ")");
-            System.out.println("Opt1");
         } else { // If a user is found, update their data
             dBUpdate("UPDATE USERDATA SET balance = " + newBalance + " WHERE username='" + userName + "'");
-            System.out.println("Opt2");
         }
     }
 
-    public void getRules() {
-
+    // Returns rules from game info
+    public String getRules() {
+        String newRules = "";
+        ResultSet rs = dBQuery("SELECT * FROM GAMEINFO WHERE messagekey = 1");
+        if (rs != null) {
+            try {
+                if (rs.next()) {
+                    newRules = rs.getString("message");
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error retrieving game rules");
+            }
+        }
+        return newRules;
     }
 
 }

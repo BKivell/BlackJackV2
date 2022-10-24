@@ -6,18 +6,28 @@ import java.util.Observable;
  * @author Bradk
  */
 public class Model extends Observable {
-    //=============================[VARIABLES]=============================
 
+    //=============================[VARIABLES]=============================
     private BlackJackDB database;
     private Player player;
     private Dealer dealer;
 
-    public int gameBet;
+    private int gameBet;
+
+    // State of game outcome
+    public enum WinState {
+        PLAYER_WIN,
+        DEALER_WIN,
+        NO_WINNER
+    }
+
+    private WinState gameResult;
 
     //=============================[CONSTRUCTOR]=============================
     public Model() {
         database = new BlackJackDB();
         dealer = new Dealer();
+        gameBet = 0;
     }
 
     //=============================[DB FUNCTIONS]=============================
@@ -37,7 +47,7 @@ public class Model extends Observable {
     }
 
     // Saves user data to database
-    public void userLogOut() {
+    public void saveUserData() {
         database.updateUserData(player.getName(), player.getBalance()); // Comit user data to database
         System.out.println("USER: " + player.getName() + " BALANCE: " + player.getBalance() + " LOGGED OUT");
     }
@@ -69,10 +79,12 @@ public class Model extends Observable {
         for (Card c : player.getHand()) {
             output += c.toString() + ",";
         }
+        output += "<br/>Players Hand Value: " + player.getHandValue();
         output += "<br/>Dealer Cards: ";
         for (Card c : dealer.getHand()) {
             output += c.toString() + ",";
         }
+        output += "<br/>Dealers Hand Value: " + dealer.getHandValue();
         output += "</html>";
         return output;
     }
@@ -86,9 +98,13 @@ public class Model extends Observable {
 
     // Player calls stand
     public void playerStand() {
-        dealToPerson(dealer, 1);
-        gameOver();
-        updateView();
+        while (dealer.getHandValue() < 17) {
+            dealToPerson(dealer, 1);
+        }
+    }
+
+    public void updatePlayerHand() {
+        player.updateHandValue();
     }
 
     // Deal card to person
@@ -101,35 +117,42 @@ public class Model extends Observable {
 
     // Calculates winner
     public void gameOver() {
-        if (playerWins()) {
-
+        if (getGameResult() == WinState.PLAYER_WIN) { // Player WIn
+            player.increaseBalance();// Increase players balance by bet
+        } else if (getGameResult() == WinState.DEALER_WIN) { // Player Loss
+            player.decreaseBalance();
         }
+        saveUserData(); // Saves data after game
+        updateView();
+    }
 
-        // Return cards to the dealers deck
+    public void returnCardsToDeck() {
         dealer.returnCards(player);
         dealer.returnCards(dealer);
-        // Save Data
-        // Display popup menu with game results
-
     }
 
     // Returns true if players cards beat dealers
-    private boolean playerWins() {
-        boolean flag = false;
+    private void checkPlayerWins() {
         if (player.getHandValue() <= 21) { // Player not bust
             if (player.getHandValue() == 21) { // Player has blackjack
-                flag = true;
+                gameResult = WinState.PLAYER_WIN;
             } else if (player.getHandValue() > dealer.getHandValue()) { // Player greater than dealer
-                flag = true;
+                gameResult = WinState.PLAYER_WIN;
             } else if (player.getHandValue() < dealer.getHandValue() && dealer.getHandValue() <= 21) { // Dealer wins
-                flag = false;
+                gameResult = WinState.DEALER_WIN;
             } else if (player.getHandValue() < dealer.getHandValue() && dealer.getHandValue() > 21) { // Player wins, dealer bust
-                flag = true;
+                gameResult = WinState.PLAYER_WIN;
+            } else {
+                gameResult = WinState.NO_WINNER;
             }
         } else { // Bust, dealer wins
-            flag = false;
+            if (dealer.getHandValue() <= 21) {
+                gameResult = WinState.DEALER_WIN;
+            } else {
+                gameResult = WinState.NO_WINNER;
+            }
+
         }
-        return flag;
     }
 
     //=============================[OTHER FUNCTIONS]=============================
@@ -138,10 +161,47 @@ public class Model extends Observable {
         return player;
     }
 
-    // Notifies view to update based on model
-    private void updateView() {
+    public Dealer getDealer() {
+        return dealer;
+    }
+
+    // Returns calculated game state
+    public WinState getGameResult() {
+        checkPlayerWins();
+        return this.gameResult;
+    }
+
+    // Sets game bet to new bet, will return false if bet is invalid
+    public boolean setBet(int newBet) {
+        if (player.getBalance() >= newBet) {
+            this.gameBet = newBet;
+            player.setMoneyInGame(newBet); // Set player bet
+            return true;
+        }
+        return false;
+    }
+
+    // Notifies view to update based on model state
+    public void updateView() {
         this.setChanged();
         this.notifyObservers(this);
+    }
+
+    public String getRules() {
+        System.out.println("Getting Game Rules: " + database.getRules());
+        return database.getRules();
+    }
+
+    public String getPlayerAceCardString() {
+        String newString = "";
+        if (!player.getAceCardArrayList().isEmpty()) {
+            newString += "<html>Players Ace Cards:<br>";
+            for (Card card : player.getAceCardArrayList()) {
+                newString += card.toString() + "       -    Value: " + card.getValue() + "<br>";
+            }
+            newString += "</html>";
+        }
+        return newString;
     }
 
 }

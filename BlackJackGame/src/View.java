@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -16,16 +17,16 @@ public class View extends JFrame implements Observer {
     private MainMenuPanel mainMenuPanel;
     private InformationPanel infoPanel;
     private GamePanel gamePanel;
-    
+
+    private boolean loadedDatabaseInfo;
+    private String gameRules;
+
     public Color buttonColor = Color.WHITE;
-    //public Image bgImage1;
-    //public Image bgImage2;
 
     //=============================[CONSTRUCTOR]=============================
     public View() {
+        loadedDatabaseInfo = false;
         this.setSize(720, 720);
-        //bgImage1 = new ImageIcon("PokerIcon.png").getImage();
-        //bgImage2 = new ImageIcon("BlackJackImage.png").getImage();
         initComponents();
         panelStartUp();
     }
@@ -34,7 +35,7 @@ public class View extends JFrame implements Observer {
     private void initComponents() {
         this.loginPanel = new LoginPanel(this);
         this.mainMenuPanel = new MainMenuPanel(this);
-        this.infoPanel = new InformationPanel(this, "GetStringFromDatabase");
+        this.infoPanel = new InformationPanel(this);
         this.gamePanel = new GamePanel(this);
         this.add(loginPanel); // Add panel to frame
         this.add(mainMenuPanel);
@@ -44,7 +45,7 @@ public class View extends JFrame implements Observer {
         this.setVisible(true);
         this.setResizable(false);
     }
-    
+
     private void panelStartUp() {
         this.loginPanel.setVisible(true);
         this.mainMenuPanel.setVisible(false);
@@ -67,7 +68,8 @@ public class View extends JFrame implements Observer {
         // Game Menu
         gamePanel.getHitButtont().addActionListener(controller);
         gamePanel.getStandButton().addActionListener(controller);
-        
+        gamePanel.getAceChangeButton().addActionListener(controller);
+
     }
 
     // Displays panel to frame
@@ -99,18 +101,26 @@ public class View extends JFrame implements Observer {
     public GamePanel getGamePanel() {
         return gamePanel;
     }
-    
-    
+
     //=============================[UPDATE]=============================
     @Override
     public void update(Observable o, Object arg) {
         Model model = (Model) arg;
-        
+
         if (gamePanel.isVisible()) { // In game
             gamePanel.getCenterText().setText(model.gameStatusString());
-        } else if (mainMenuPanel.isVisible()) { // In game
-            mainMenuPanel.getBalanceLabel().setText("Balance: " + model.getPlayer().getBalance());
+            gamePanel.getAceCardText().setText(model.getPlayerAceCardString());
+            if (model.getPlayer().hasAce()) { // Player has ace
+                gamePanel.getAceChangeButton().setVisible(true);
+            } else { // Player doesnt have ace
+                gamePanel.getAceChangeButton().setVisible(false);
+            }
+        } else if (infoPanel.isVisible()) {
+            infoPanel.setInfoText(model.getRules());
         }
+        mainMenuPanel.getBalanceLabel().setText("Balance: " + model.getPlayer().getBalance());
     }
-    
+
+    //=============================[POPUP WINDOWS]=============================
+
 }

@@ -19,9 +19,8 @@ public class InformationPanel extends JPanel {
     private JLabel infoLabel;
 
     //=============================[CONSTRUCTOR]=============================
-    public InformationPanel(View view, String infoString) {
+    public InformationPanel(View view) {
         this.view = view;
-        this.infoString = infoString;
         this.setSize(700, 700); // Set panel size as frame size
         initComponents(); // Setup componenets
         this.setLayout(null);
@@ -40,16 +39,22 @@ public class InformationPanel extends JPanel {
         // Info Label Setup
         infoLabel = new JLabel();
         infoLabel.setText(infoString);
-        infoLabel.setSize(view.getWidth()-100, view.getHeight()-350);
+        infoLabel.setForeground(view.buttonColor);
+        infoLabel.setSize(view.getWidth() - 100, view.getHeight() - 350);
         infoLabel.setLocation(20, 50);
         infoLabel.setVisible(true);
-        
+
         this.add(returnToMenu);
         this.add(infoLabel);
     }
 
     public JButton getReturnToMenuButton() {
         return returnToMenu;
+    }
+
+    public void setInfoText(String newInfo) {
+        this.infoString = newInfo;
+        infoLabel.setText(infoString);
     }
 
 }

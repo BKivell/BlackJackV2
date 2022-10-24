@@ -13,8 +13,10 @@ public class GamePanel extends JPanel {
 
     private View view;
     private JLabel centerText;
+    private JLabel aceCardText;
     private JButton hitButton;
     private JButton standButton;
+    private JButton changeAceCardButton;
 
     //=============================[CONSTRUCTOR]=============================
     public GamePanel(View view) {
@@ -30,9 +32,17 @@ public class GamePanel extends JPanel {
         // centerText Setup
         centerText = new JLabel();
         centerText.setText("[TABLE INFORMATION]");
+        centerText.setForeground(view.buttonColor);
         centerText.setSize(view.getWidth() - 200, 200);
-        centerText.setLocation(getCenterXAlign(centerText), getCenterYAlign(centerText));
+        centerText.setLocation(getCenterXAlign(centerText), getCenterYAlign(centerText) - 100);
         centerText.setVisible(true);
+
+        aceCardText = new JLabel();
+        aceCardText.setText("");
+        aceCardText.setForeground(view.buttonColor);
+        aceCardText.setSize(view.getWidth() - 200, 100);
+        aceCardText.setLocation(getCenterXAlign(centerText), getCenterYAlign(centerText) + 100);
+        aceCardText.setVisible(true);
 
         // Hit Button Setup
         hitButton = new JButton();
@@ -50,9 +60,19 @@ public class GamePanel extends JPanel {
         standButton.setLocation((view.getWidth() - standButton.getWidth()) - 30, view.getHeight() - standButton.getHeight() - 50);
         standButton.setVisible(true);
 
+        // Stand Button Setup
+        changeAceCardButton = new JButton();
+        changeAceCardButton.setText("Change Ace Value");
+        changeAceCardButton.setBackground(view.buttonColor);
+        changeAceCardButton.setSize(150, 30);
+        changeAceCardButton.setLocation((view.getWidth() / 2) - changeAceCardButton.getWidth() / 2, view.getHeight() - 80);
+        changeAceCardButton.setVisible(true);
+
         this.add(centerText);
+        this.add(aceCardText);
         this.add(standButton);
         this.add(hitButton);
+        this.add(changeAceCardButton);
 
     }
 
@@ -78,5 +98,13 @@ public class GamePanel extends JPanel {
 
     public JButton getHitButtont() {
         return hitButton;
+    }
+
+    public JButton getAceChangeButton() {
+        return changeAceCardButton;
+    }
+
+    public JLabel getAceCardText() {
+        return aceCardText;
     }
 }

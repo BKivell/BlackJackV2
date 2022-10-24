@@ -46,6 +46,8 @@ public class Controller implements ActionListener {
             EventHandleHit();
         } else if (source == view.getGamePanel().getStandButton()) {// GAME PANEL - Stand Button
             EventHandleStand();
+        } else if (source == view.getGamePanel().getAceChangeButton()) {
+            EventHandleChangeAces();
         }
 
     }
@@ -53,7 +55,6 @@ public class Controller implements ActionListener {
     //=============================[BUTTON EVENTS]=============================
     // LogIn Button Events
     private void EventHandleLogInButton() {
-
         System.out.println("LogIn");
         String logInString = view.getLogInPanel().getUserNameTextField().getText().trim();
         // check not empty
@@ -71,39 +72,43 @@ public class Controller implements ActionListener {
         System.out.println("Info Pressed");
         view.displayPanel(view.getInfoPanel()); // Shows info page
         view.hidePanel(view.getMainMenuPanel()); // Hides menu page
-
+        model.updateView(); // Manually update view to avoid endless looping of collecting rules
     }
 
     // Play Button Events
     private void EventHandlePlayButton() {
         System.out.println("Play Pressed");
-        view.hidePanel(view.getMainMenuPanel()); // Hides menu page
-        view.displayPanel(view.getGamePanel()); // Shows info page
-        String betAmount = JOptionPane.showInputDialog("Bet Amount"); // -------------------------------------------- CHECK INPUT INT
-        model.gameBet = (Integer.parseInt(betAmount));
-        model.startGame();
-
+        int newBet = view.getPopUpInt("Bet Amount", "Invalid Bet: Please ensure bet is valid and less than player balance", true, model.getPlayer().getBalance());
+        if (newBet != 0) // Not Invalid Bet
+        {
+            model.setBet(newBet);
+            // Panel Configuration
+            view.hidePanel(view.getMainMenuPanel()); // Hides menu page
+            view.displayPanel(view.getGamePanel()); // Shows game page
+            // Start game
+            model.startGame();
+        }
     }
 
-    // Log Out Button Events
+// Log Out Button Events
     private void EventHandleLogOutButton() {
         System.out.println("Log Out Pressed");
         view.hidePanel(view.getMainMenuPanel()); // Hides menu page
         view.displayPanel(view.getLogInPanel()); // Shows login page
-        model.userLogOut();
+        model.saveUserData(); // Logout user
     }
 
     // Exit Button Events
     private void EventHandleExitButton() {
         System.out.println("Exit Pressed");
+        model.saveUserData(); // Logout User
         System.exit(0);
     }
 
     // Deposit Button Events
     private void EventHandleDepositButton() {
         System.out.println("Deposit Pressed");
-        String depositAmountString = JOptionPane.showInputDialog("Deposit Amount");// -------------------------------------------- CHECK INPUT INT
-        model.depositMoney(Integer.parseInt(depositAmountString));
+        model.depositMoney(view.getPopUpInt("Deposit Amount", "Invalid Deposit: Please enter valid amount", false, 0));
     }
 
     // Return To Menu Button
@@ -115,27 +120,41 @@ public class Controller implements ActionListener {
     // Player Hit
     private void EventHandleHit() {
         model.playerHit();
+        if (model.getPlayer().getHandValue() > 21) {
+            gameOverGUI();
+        }
     }
 
     // Player Stand
     private void EventHandleStand() {
         model.playerStand();
+        gameOverGUI();
     }
 
-    //=============================[TEST]=============================
-    public static void main(String[] args) {
-        Controller cont = new Controller();
+    private void EventHandleChangeAces() {
+        Card cardToChange = (Card) JOptionPane.showInputDialog(null, "Select Card to Change",
+                "The Choice of a Lifetime", JOptionPane.QUESTION_MESSAGE, null,
+                model.getPlayer().getAceCardArrayList().toArray(), // Array of cards
+                model.getPlayer().getAceCardArrayList().get(0)); // Initial choice
+
+        if (cardToChange != null) {
+            if (cardToChange.getValue() == 1) {
+                cardToChange.setValue(11);
+            } else {
+                cardToChange.setValue(1);
+            }
+            model.updatePlayerHand();
+        }
+        model.updateView();
+    }
+
+    //=============================[FUNCTIONS]=============================
+    private void gameOverGUI() { // Performs gameover sequence in correct order, switches to main menu
+        model.gameOver();
+        view.displayGameResultPopUp(model.getPlayer(), model.getDealer(), model.getGameResult());
+        model.returnCardsToDeck();
+        view.hidePanel(view.getGamePanel()); // Hides panel
+        view.displayPanel(view.getMainMenuPanel()); // Shows panel
     }
 
 }
-
-///TO DO LIST
-//1.) Setup Database Drivers (At least 3 read + 3 write)
-//3.) Hit & Stand
-//4.) Rules & How to play - commit to database?
-//5.) Deposit Money to account (Check 0 values)
-//6.) Exit button
-//7.) Change ace card value
-//8.) Set amount for placing bet (Check 0 values)
-//9.) Ensure version control
-//10.) Test cases (At least 5)

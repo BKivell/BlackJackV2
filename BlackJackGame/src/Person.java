@@ -55,7 +55,7 @@ public class Person {
     }
 
     // Checks player hand for Ace RETURNS number of aces
-    public int checkForAce() {
+    public int aceCount() {
         int i = 0;
         for (Card c : this.getHand()) {
             if (c.getFace().equals("Ace")) {
