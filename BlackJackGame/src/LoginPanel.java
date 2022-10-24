@@ -29,7 +29,6 @@ public class LoginPanel extends JPanel {
         this.setSize(view.getWidth(), view.getHeight()); // Set panel size as frame size
         initComponents(); // Setup componenets
         this.setLayout(null);
-        //view.getGraphics().drawImage(view.bgImage1, 0, 0, view);
         this.setBackground(Color.black);
     }
 
@@ -38,6 +37,7 @@ public class LoginPanel extends JPanel {
         // Login Button Setup
         logInButton = new JButton();
         logInButton.setText("Login");
+        logInButton.setBackground(view.buttonColor);
         logInButton.setSize(75, 30);
         logInButton.setLocation(getCenterXAlign(logInButton), getCenterYAlign(logInButton) + 50);
         logInButton.setVisible(true);

@@ -1,5 +1,5 @@
+
 import java.awt.Color;
-import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -38,12 +38,14 @@ public class MainMenuPanel extends JPanel {
         playButton = new JButton();
         playButton.setText("Play");
         playButton.setSize(175, 30);
+        playButton.setBackground(view.buttonColor);
         playButton.setLocation(getCenterXAlign(playButton), getCenterYAlign(playButton) + 100);
         playButton.setVisible(true);
 
         // infoButton Button Setup
         infoButton = new JButton();
         infoButton.setText("Help");
+        infoButton.setBackground(view.buttonColor);
         infoButton.setSize(150, 30);
         infoButton.setLocation(getCenterXAlign(infoButton), getCenterYAlign(infoButton) + 140);
         infoButton.setVisible(true);
@@ -51,20 +53,22 @@ public class MainMenuPanel extends JPanel {
         // exitButton Button Setup
         exitButton = new JButton();
         exitButton.setText("Exit");
+        exitButton.setBackground(view.buttonColor);
         exitButton.setSize(75, 30);
-        exitButton.setLocation((view.getWidth()-exitButton.getWidth())-30, view.getHeight()-exitButton.getHeight()-50);
+        exitButton.setLocation((view.getWidth() - exitButton.getWidth()) - 30, view.getHeight() - exitButton.getHeight() - 50);
         exitButton.setVisible(true);
 
         // log Out Button Setup
         logOutButton = new JButton();
         logOutButton.setText("Log Out");
+        logOutButton.setBackground(view.buttonColor);
         logOutButton.setSize(100, 30);
         logOutButton.setLocation((view.getWidth() - logOutButton.getWidth()) - 30, 20);
         logOutButton.setVisible(true);
 
         // balance Label  Setup
         balanceLabel = new JLabel();
-        balanceLabel.setText("Balance: ");
+        balanceLabel.setText("Balance: 0");
         balanceLabel.setForeground(Color.WHITE);
         balanceLabel.setSize(100, 20);
         balanceLabel.setLocation(20, 20);
@@ -73,6 +77,7 @@ public class MainMenuPanel extends JPanel {
         // deposit Button Button Setup
         depositButton = new JButton();
         depositButton.setText("Deposit Funds");
+        depositButton.setBackground(view.buttonColor);
         depositButton.setSize(130, 20);
         depositButton.setLocation(balanceLabel.getWidth() + 50, 20);
         depositButton.setVisible(true);
@@ -92,7 +97,7 @@ public class MainMenuPanel extends JPanel {
     }
 
     // Returns y center position accounting for component height
-    private int getCenterYAlign(Component comp) {
+    private int getCenterYAlign(JComponent comp) {
         return getHeight() / 2 - comp.getSize().height / 2;
     }
 
@@ -128,4 +133,3 @@ public class MainMenuPanel extends JPanel {
     }
 
 }
-

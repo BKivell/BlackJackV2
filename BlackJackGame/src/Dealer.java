@@ -10,13 +10,11 @@ public final class Dealer extends Person {
 
     private final Deck deck;
     private final Random rand = new Random();
-    private int deckIndex;
     
     
     // DEFAULT CONSTRUCTOR
     public Dealer() {
         this.deck = new Deck();
-        deckIndex = 0;
     }
 
     // SHUFFLES DECK
@@ -29,9 +27,8 @@ public final class Dealer extends Person {
     // RETURNS Card FROM Dealer Deck & REMOVES FROM DECK
     public Card dealCard() {
         Card card;
-        card = deck.getDeckCards().get(deckIndex);
-        deck.getDeckCards().remove(deckIndex);
-        deckIndex++;
+        card = deck.getDeckCards().get(0);
+        deck.getDeckCards().remove(0);
         return card;
     }
 
@@ -39,10 +36,9 @@ public final class Dealer extends Person {
     public void returnCards(Person p) {
         ArrayList<Card> returned = p.getHand();
         int returnedIndex = 0;
-        for (int i = 0; i <= returned.size() - 1; i++) {
-            this.deck.getDeckCards().add(returned.get(returnedIndex));
+        for (Card card : returned) {
+            this.deck.getDeckCards().add(card);
             returnedIndex++;
-            deckIndex--;
         }
         p.clearCards();
     }
