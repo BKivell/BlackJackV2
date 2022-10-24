@@ -9,7 +9,7 @@ import java.sql.Statement;
  *
  * @author Brad Kivell (20115449)
  */
-public class BlackJackDB {
+public final class BlackJackDB {
 
     //=============================[VARIABLES]=============================
     private DBConnection dBConnection;
@@ -20,7 +20,8 @@ public class BlackJackDB {
     public BlackJackDB() {
         this.dBConnection = new DBConnection();
         this.conn = this.dBConnection.getConnection();
-        //setupTables();
+        setupTables();
+        setUpRules();
     }
 
     //=============================[TABLE SETUP]=============================
@@ -31,7 +32,7 @@ public class BlackJackDB {
             System.out.println("User Data Table Already Exists");
         }
         if (!ifTableExists("GAMEINFO")) {
-            dBUpdate("CREATE TABLE GAMEINFO (key INT, message VARCHAR(2000))");
+            dBUpdate("CREATE TABLE GAMEINFO (messagekey INT, message VARCHAR(2000))");
         } else {
             System.out.println("Game Info Table Already Exists");
         }
@@ -47,13 +48,10 @@ public class BlackJackDB {
         boolean flag = false;
         try {
             DatabaseMetaData dbmd = conn.getMetaData();
-            ResultSet rsDBMeta = dbmd.getTables(null, null, "TABLE_NAME", null);
+            ResultSet rsDBMeta = dbmd.getTables(null, null, tableName, null);
             if (rsDBMeta != null) {
-                while (rsDBMeta.next()) {
-                    String currentTableName = rsDBMeta.getString("TABLE_NAME");
-                    if (tableName.compareToIgnoreCase(tableName) == 0) {
-                        flag = true;
-                    }
+                if (rsDBMeta.next()) {
+                    flag = true;
                 }
                 rsDBMeta.close();
             }
@@ -167,6 +165,40 @@ public class BlackJackDB {
             }
         }
         return newRules;
+    }
+
+    private void setUpRules() {
+        String rules = """
+        <html>RULES:<br>
+        THE GAME:<br>
+        The point of the BlackJack is the get your card value as close to 21 with out getting BUST to win and get the bet value doubled.<br>
+        <br>             
+        CARD VALUES:<br>
+        Each number card is the value of the card, Ace Cards value can <br>
+        be 1 or 11, Face cards value equal 10.<br>
+        <br>     
+        BETTING:<br>
+        Start of the game the player places a bet (must be between 0 and the players balance)<br>
+        <br>              
+        THE DEALER:<br>
+        Once the player has placed their bet, the dealer then deal 2 card to the player facing up and<br>
+        1 card facing up and one card hidden from player to themself. The Dealer then asks the player if they<br>
+        Want to HIT or STAND, If Player picks HIT then dealer gives them one 1 card and asks again until player either<br>
+        says STAND or if player gets BUST(Hand value over 21). The dealer then flips over the other card and will keep dealing to themself
+        until a minimum value of 17 has been reached.<br></html>
+        """;
+
+        ResultSet rs = dBQuery("SELECT * FROM GAMEINFO WHERE messagekey = 1");
+        if (rs != null) {
+            try {
+                if (!rs.next()) {
+                    dBUpdate("INSERT INTO GAMEINFO VALUES(1, '" + rules + "')");
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error inserting rules: " + ex);
+            }
+        }
+
     }
 
 }
