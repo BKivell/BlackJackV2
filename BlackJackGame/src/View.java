@@ -122,5 +122,53 @@ public class View extends JFrame implements Observer {
     }
 
     //=============================[POPUP WINDOWS]=============================
+// Returns integer from popup window - checks for valid input
+    public int getPopUpInt(String displayMessage, String errorMessage, boolean hasMax, int maxAmount) {
+        int newNum = 0;
+        while (newNum <= 0) { // While input number is too low
+            try {
+                String inputString = JOptionPane.showInputDialog(displayMessage); // Display input window
+                if (inputString == null) { // Check for cancel option
+                    break;
+                }
+                int stringAsInt = Integer.parseInt(inputString);
+                if (hasMax && stringAsInt <= maxAmount) {
+                    newNum = stringAsInt;
+                } else if (hasMax && stringAsInt > maxAmount) {
+                    newNum = 0; // Dont allow larger than maximum values
+                } else {
+                    newNum = stringAsInt; // hasMax is false, allow any value
+                }
+            } catch (NumberFormatException e) {
+                newNum = 0; // Set newNum to 0
+            }
+            if (newNum <= 0) { // Check for bad input and display error popup
+                JOptionPane.showMessageDialog(this, errorMessage); // Display error message popup
+            }
+        }
+        return newNum;
+    }
 
+    public void displayGameResultPopUp(Player player, Dealer dealer, Model.WinState winState) {
+        String gameString = "<html>";
+        if (winState == Model.WinState.PLAYER_WIN) {
+            gameString += "Player Wins!      New Balance: $" + player.getBalance();
+        } else if (winState == Model.WinState.DEALER_WIN) {
+            gameString += "Dealer Wins.      New Balance: $" + player.getBalance();
+        } else {
+            gameString += "No One Wins.      New Balance: $" + player.getBalance();
+        }
+        gameString += "<br/>Players Cards: ";
+        for (Card c : player.getHand()) {
+            gameString += c.toString() + ",";
+        }
+        gameString += "<br/>Players Hand Value: " + player.getHandValue();
+        gameString += "<br/>Dealer Cards: ";
+        for (Card c : dealer.getHand()) {
+            gameString += c.toString() + ",";
+        }
+        gameString += "<br/>Dealers Hand Value: " + dealer.getHandValue();
+        gameString += "</html>";
+        JOptionPane.showMessageDialog(this, gameString);
+    }
 }

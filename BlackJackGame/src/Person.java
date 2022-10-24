@@ -79,5 +79,25 @@ public class Person {
         }
         return ace;
     }
+    // Returns all ace cards
+    public ArrayList<Card> getAceCardArrayList() {
+        ArrayList<Card> cardList = new ArrayList<>();
+        for (Card card : this.hand.getHand()) {
+            if (card.getFace().equals("Ace")) {
+                cardList.add(card);
+            }
+        }
+        return cardList;
+    }
+
+    // Returns true if holds ace card
+    public boolean hasAce() {
+        for (Card card : this.hand.getHand()) {
+            if (card.getFace().equals("Ace")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
