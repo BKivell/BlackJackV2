@@ -1,5 +1,6 @@
 
 import java.awt.Color;
+import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -28,13 +29,15 @@ public class GamePanel extends JPanel {
     }
 
     //=============================[COMPONENT SETUP]=============================
+    // Sets up all panel components
     private void initComponents() {
         // centerText Setup
         centerText = new JLabel();
         centerText.setText("[TABLE INFORMATION]");
         centerText.setForeground(view.buttonColor);
-        centerText.setSize(view.getWidth() - 200, 200);
-        centerText.setLocation(getCenterXAlign(centerText), getCenterYAlign(centerText) - 100);
+        centerText.setFont(new Font("Arial", Font.PLAIN, 18));
+        centerText.setSize(view.getWidth() - 100, 400);
+        centerText.setLocation(getCenterXAlign(centerText), getCenterYAlign(centerText) - 200);
         centerText.setVisible(true);
 
         aceCardText = new JLabel();
@@ -68,6 +71,7 @@ public class GamePanel extends JPanel {
         changeAceCardButton.setLocation((view.getWidth() / 2) - changeAceCardButton.getWidth() / 2, view.getHeight() - 80);
         changeAceCardButton.setVisible(true);
 
+        // Add components to panel
         this.add(centerText);
         this.add(aceCardText);
         this.add(standButton);

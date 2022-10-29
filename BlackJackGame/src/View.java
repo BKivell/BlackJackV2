@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
@@ -151,13 +150,12 @@ public class View extends JFrame implements Observer {
 
     public void displayGameResultPopUp(Player player, Dealer dealer, Model.WinState winState) {
         String gameString = "<html>";
-        if (winState == Model.WinState.PLAYER_WIN) {
-            gameString += "Player Wins!      New Balance: $" + player.getBalance();
-        } else if (winState == Model.WinState.DEALER_WIN) {
-            gameString += "Dealer Wins.      New Balance: $" + player.getBalance();
-        } else {
-            gameString += "No One Wins.      New Balance: $" + player.getBalance();
+        switch (winState) { 
+            case PLAYER_WIN -> gameString += "Player Wins!      New Balance: $" + player.getBalance(); // Player wins
+            case DEALER_WIN -> gameString += "Dealer Wins.      New Balance: $" + player.getBalance(); // Dealer wins
+            default -> gameString += "No One Wins.      New Balance: $" + player.getBalance(); // No winner
         }
+        // Gets final cards and values based on game over & after dealer has dealed their final cards
         gameString += "<br/>Players Cards: ";
         for (Card c : player.getHand()) {
             gameString += c.toString() + ",";
@@ -169,6 +167,6 @@ public class View extends JFrame implements Observer {
         }
         gameString += "<br/>Dealers Hand Value: " + dealer.getHandValue();
         gameString += "</html>";
-        JOptionPane.showMessageDialog(this, gameString);
+        JOptionPane.showMessageDialog(this, gameString); // Show popup with game results
     }
 }

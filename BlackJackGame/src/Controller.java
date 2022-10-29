@@ -56,7 +56,7 @@ public class Controller implements ActionListener {
     // LogIn Button Events
     private void EventHandleLogInButton() {
         System.out.println("LogIn");
-        String logInString = view.getLogInPanel().getUserNameTextField().getText().trim();
+        String logInString = view.getLogInPanel().getUserNameTextField().getText().trim(); // Gets login text box string
         // check not empty
         if (!"".equals(logInString)) {
             view.hidePanel(view.getLogInPanel()); // Hides login page

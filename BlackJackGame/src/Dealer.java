@@ -8,9 +8,8 @@ import java.util.Random;
  */
 public final class Dealer extends Person {
 
-    private final Deck deck;
+    private final Deck deck; // Deck of cards
     private final Random rand = new Random();
-    
     
     // DEFAULT CONSTRUCTOR
     public Dealer() {

@@ -55,59 +55,42 @@ public class Model extends Observable {
     //=============================[GAME CONTROLS]=============================
     // Sets game up
     public void startGame() {
-        // Clears current cards held
+        // Clears current cards held and shuffles deck
         player.clearCards();
         dealer.clearCards();
         dealer.shuffleDeck();
 
-        dealToPerson(player, 1);
-        dealToPerson(player, 1);
+        dealToPerson(player, 2); // Deals 2 cards to player
 
-        dealToPerson(dealer, 1);
-        updateView();
+        dealToPerson(dealer, 1); // Deals 1 card to dealer
+        updateView(); // Updates view
     }
 
-// Adds money to player balance
+    // Adds money to player balance
     public void depositMoney(int depositAmount) {
         player.setBalance(player.getBalance() + depositAmount);
         updateView();
     }
 
-    // Returns cards
-    public String gameStatusString() {
-        String output = "<html>Players Cards: ";
-        for (Card c : player.getHand()) {
-            output += c.toString() + ",";
-        }
-        output += "<br/>Players Hand Value: " + player.getHandValue();
-        output += "<br/>Dealer Cards: ";
-        for (Card c : dealer.getHand()) {
-            output += c.toString() + ",";
-        }
-        output += "<br/>Dealers Hand Value: " + dealer.getHandValue();
-        output += "</html>";
-        return output;
-    }
-
     // Player calls hit
     public void playerHit() {
-        // Keep hitting until player wants to end turn or goes bust
         dealToPerson(player, 1);
         updateView();
     }
 
     // Player calls stand
     public void playerStand() {
-        while (dealer.getHandValue() < 17) {
+        while (dealer.getHandValue() < 17) { // While the dealer doesn't have a value of 17 they must keep hitting
             dealToPerson(dealer, 1);
         }
     }
 
+    // Updates players hand value (use when ace card values are changed)
     public void updatePlayerHand() {
         player.updateHandValue();
     }
 
-    // Deal card to person
+    // Deals num cards to person
     private void dealToPerson(Person person, int num) {
         for (int i = 0; i < num; i++) {
             Card deltCard = dealer.dealCard();
@@ -126,6 +109,7 @@ public class Model extends Observable {
         updateView();
     }
 
+    // Returns player & dealer cards back to deck
     public void returnCardsToDeck() {
         dealer.returnCards(player);
         dealer.returnCards(dealer);
@@ -142,7 +126,7 @@ public class Model extends Observable {
                 gameResult = WinState.DEALER_WIN;
             } else if (player.getHandValue() < dealer.getHandValue() && dealer.getHandValue() > 21) { // Player wins, dealer bust
                 gameResult = WinState.PLAYER_WIN;
-            } else {
+            } else { // No winner
                 gameResult = WinState.NO_WINNER;
             }
         } else { // Bust, dealer wins
@@ -161,6 +145,7 @@ public class Model extends Observable {
         return player;
     }
 
+    // Returns dealer
     public Dealer getDealer() {
         return dealer;
     }
@@ -187,11 +172,13 @@ public class Model extends Observable {
         this.notifyObservers(this);
     }
 
+    // Gets the game rules from database
     public String getRules() {
         System.out.println("Getting Game Rules: " + database.getRules());
         return database.getRules();
     }
 
+    // Gets the players ace cards as a string
     public String getPlayerAceCardString() {
         String newString = "";
         if (!player.getAceCardArrayList().isEmpty()) {
@@ -202,6 +189,23 @@ public class Model extends Observable {
             newString += "</html>";
         }
         return newString;
+    }
+    
+    // Returns an HTML string of player & dealer cards and their total value
+    public String gameStatusString() {
+        String output = "<html>Players Cards: ";
+        for (Card c : player.getHand()) { // Loops through player cards
+            output += c.toString() + ",";
+        }
+        output += "<br/>Players Hand Value: " + player.getHandValue();
+        output += "<br><br>";
+        output += "<br/>Dealer Cards: ";
+        for (Card c : dealer.getHand()) { // Loops through dealer cards
+            output += c.toString() + ",";
+        }
+        output += "<br/>Dealers Hand Value: " + dealer.getHandValue();
+        output += "</html>";
+        return output;
     }
 
 }

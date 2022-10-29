@@ -19,12 +19,13 @@ public final class BlackJackDB {
     //=============================[CONSTRUCTOR]=============================
     public BlackJackDB() {
         this.dBConnection = new DBConnection();
-        this.conn = this.dBConnection.getConnection();
+        this.conn = this.dBConnection.getConnection(); // Gets database connection
         setupTables();
         setUpRules();
     }
 
     //=============================[TABLE SETUP]=============================
+    // Checks if database tables have already been created, if not then it will set them up
     private void setupTables() {
         if (!ifTableExists("USERDATA")) {
             dBUpdate("CREATE TABLE USERDATA (username VARCHAR(12), balance INT)");
@@ -47,10 +48,10 @@ public final class BlackJackDB {
     private boolean ifTableExists(String tableName) {
         boolean flag = false;
         try {
-            DatabaseMetaData dbmd = conn.getMetaData();
+            DatabaseMetaData dbmd = conn.getMetaData(); // Gets database metadata
             ResultSet rsDBMeta = dbmd.getTables(null, null, tableName, null);
             if (rsDBMeta != null) {
-                if (rsDBMeta.next()) {
+                if (rsDBMeta.next()) { // result set will have a next value if table has been found
                     flag = true;
                 }
                 rsDBMeta.close();
@@ -61,7 +62,7 @@ public final class BlackJackDB {
         return flag;
     }
 
-    // Returns result set based on query
+    // Returns result set based on SQL query
     private ResultSet dBQuery(String statementString) {
         ResultSet rs = null;
         try {
@@ -73,7 +74,7 @@ public final class BlackJackDB {
         return rs;
     }
 
-    // Updates database based on input statement
+    // Updates database based on input SQL statement
     private void dBUpdate(String statementString) {
         try {
             statement = conn.createStatement();
@@ -84,11 +85,12 @@ public final class BlackJackDB {
         }
     }
 
+    // Prints all users within the database's data to console
     public void printUserData() {
         try {
-            ResultSet rs = dBQuery("SELECT * FROM USERDATA");
-            if (rs != null) {
-                while (rs.next()) {
+            ResultSet rs = dBQuery("SELECT * FROM USERDATA"); // Gets all data from userdata table
+            if (rs != null) { // Checks not empty
+                while (rs.next()) { // Loops through all users
                     String username = rs.getString("username");
                     int balance = rs.getInt("balance");
                     System.out.println("USER: " + username + " BAL: " + balance);
@@ -120,7 +122,7 @@ public final class BlackJackDB {
         return userCheck;
     }
 
-    // Returns true if user found within database
+    // Returns the users balance stored in the database with the same username as input, default 0
     public int getUserBalance(String userName) {
         int balance = 0;
         if (checkForUser(userName)) // Check for user
@@ -142,7 +144,7 @@ public final class BlackJackDB {
         return balance;
     }
 
-    // Updates user data
+    // Updates user data table with user information
     public void updateUserData(String userName, int newBalance) {
         if (!checkForUser(userName)) { // If no user found, add new user
             dBUpdate("INSERT INTO USERDATA VALUES('" + userName + "'," + newBalance + ")");
@@ -167,6 +169,7 @@ public final class BlackJackDB {
         return newRules;
     }
 
+    // Sets up rules in database
     private void setUpRules() {
         String rules = """
         <html>RULES:<br>
@@ -189,7 +192,7 @@ public final class BlackJackDB {
         """;
 
         ResultSet rs = dBQuery("SELECT * FROM GAMEINFO WHERE messagekey = 1");
-        if (rs != null) {
+        if (rs != null) { // Checks rules are not already in the game
             try {
                 if (!rs.next()) {
                     dBUpdate("INSERT INTO GAMEINFO VALUES(1, '" + rules + "')");
@@ -199,6 +202,11 @@ public final class BlackJackDB {
             }
         }
 
+    }
+
+    // Inserts new message with key (as primary key) into GAMEINFO table
+    public void insertGameInfo(int messagekey, String message) {
+        dBUpdate("INSERT INTO GAMEINFO VALUES(" + messagekey + ", '" + message + "')");
     }
 
 }

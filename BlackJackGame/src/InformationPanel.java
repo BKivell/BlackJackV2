@@ -44,14 +44,17 @@ public class InformationPanel extends JPanel {
         infoLabel.setLocation(20, 50);
         infoLabel.setVisible(true);
 
+        // Adds components to panel
         this.add(returnToMenu);
         this.add(infoLabel);
     }
 
+    // Returns returnToMenu Jbutton
     public JButton getReturnToMenuButton() {
         return returnToMenu;
     }
 
+    // Sets the information text with new string
     public void setInfoText(String newInfo) {
         this.infoString = newInfo;
         infoLabel.setText(infoString);
