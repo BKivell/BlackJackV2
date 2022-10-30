@@ -9,8 +9,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /**
- *
- * @author Brad Kivell
+ * @author Brad Kivell - 20115449
+ * @author Shelvin Kumar - 17985924
  */
 public class LoginPanel extends JPanel {
 

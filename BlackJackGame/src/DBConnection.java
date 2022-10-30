@@ -3,8 +3,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- *
- * @author Brad Kivell (20115449)
+ * @author Brad Kivell - 20115449
+ * @author Shelvin Kumar - 17985924
  */
 public final class DBConnection {
 

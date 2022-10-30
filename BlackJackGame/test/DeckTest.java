@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -7,7 +8,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /*
- * @author Shelvin Kumar
+ * @author Brad Kivell - 20115449
+ * @author Shelvin Kumar - 17985924
  */
 public class DeckTest {
 
@@ -30,7 +32,7 @@ public class DeckTest {
     public void tearDown() {
     }
 
-    /
+    /**
      * Test of getDeckCards method, of class Deck.
      */
     @Test
@@ -53,7 +55,7 @@ public class DeckTest {
         Card card1 = testDeck.getDeckCards().get(i);
         testDeck.switchCards(i, j);
         Card card2 = testDeck.getDeckCards().get(j);
-        assertSame(card1,card2);
+        assertSame(card1, card2);
     }
 
 }

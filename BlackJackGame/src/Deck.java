@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 
 /**
- * @author Shelvin Kumar
- * @author Brad Kivell
+ * @author Brad Kivell - 20115449
+ * @author Shelvin Kumar - 17985924
  */
 public class Deck {
 

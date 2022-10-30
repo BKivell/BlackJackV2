@@ -6,8 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- *
- * @author Brad and Shelvin Kumar
+ * @author Brad Kivell - 20115449
+ * @author Shelvin Kumar - 17985924
  */
 public class MainMenuPanel extends JPanel {
 

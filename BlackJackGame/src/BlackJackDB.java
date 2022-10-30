@@ -7,7 +7,8 @@ import java.sql.Statement;
 
 /**
  *
- * @author Brad Kivell (20115449)
+ * @author Brad Kivell - 20115449
+ * @author Shelvin Kumar - 17985924
  */
 public final class BlackJackDB {
 

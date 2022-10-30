@@ -1,7 +1,7 @@
 /**
  *
- * @author Brad Kivell
- * @author Shelvin Kumar
+ * @author Brad Kivell - 20115449
+ * @author Shelvin Kumar - 17985924
  */
 public class Card {
 

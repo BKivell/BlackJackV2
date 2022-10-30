@@ -4,8 +4,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author Brad Kivell
+ * @author Brad Kivell - 20115449
+ * @author Shelvin Kumar - 17985924
  */
 public class Controller implements ActionListener {
 

@@ -2,8 +2,8 @@
 import java.util.Observable;
 
 /**
- *
- * @author Bradk
+ * @author Brad Kivell - 20115449
+ * @author Shelvin Kumar - 17985924
  */
 public class Model extends Observable {
 
